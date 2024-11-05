@@ -4,6 +4,10 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import WebViewScreen from "./WebViewScreen";
+
+const Stack = createStackNavigator();
 
 function AccountScreen({ navigation }) {
     return (
@@ -28,6 +32,15 @@ function AccountScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
         </View>
+    );
+}
+
+function AccountScreenNavigator() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Account Overview" component={AccountScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+        </Stack.Navigator>
     );
 }
 
@@ -60,4 +73,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AccountScreen;
+export default AccountScreenNavigator;
