@@ -44,7 +44,7 @@ export default function App() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="Home" component={MainTabNavigator} options={{ headerShown: false }} />
-                <Stack.Screen name="WebViewScreen" component={WebViewScreen} options={{ title: "Web Page" }} />
+                <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
