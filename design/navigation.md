@@ -15,7 +15,7 @@ end
 
 space:2
 News-->Article
-space
+Account-->WebView["Web View"]
 
 block:Beach:4
     Favorites-->Today
