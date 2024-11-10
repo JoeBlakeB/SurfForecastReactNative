@@ -2,18 +2,34 @@
  * @fileoverview This is the account management tab screen, which shows the users account options
  */
 
-import React, { useState } from "react";
+import React, {useContext} from "react";
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { SafeAreaView  } from "react-native-safe-area-context";
 import WebViewScreen from "./WebViewScreen";
+import SettingsContext from "../components/SettingsContext";
 
 const Stack = createStackNavigator();
 
 function AccountScreen({ navigation }) {
+    const { settings } = useContext(SettingsContext);
+
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Account</Text>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Preferences</Text>
+                <View style={styles.option}>
+                    <Text style={styles.optionText}>Use Real API</Text>
+                    <Switch
+                        value={settings.useRealAPI}
+                        style={styles.switch}
+                        onValueChange={() => {settings.toggleUseRealAPI()}}
+                    />
+                </View>
             </View>
 
             <View style={styles.section}>
@@ -31,7 +47,7 @@ function AccountScreen({ navigation }) {
                     <Text style={styles.optionText}>Privacy Policy</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -63,7 +79,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingVertical: 12,
+        height: 48,
         borderBottomWidth: 1,
         borderBottomColor: "#eee",
     },
@@ -71,6 +87,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#333",
     },
+    switch: {
+        marginRight: 8,
+    }
 });
 
 export default AccountScreenNavigator;
