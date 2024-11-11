@@ -62,8 +62,6 @@ const useNewsAPI = () => {
                 postsData = DEMO_POSTS.slice(offset, offset + POSTS_PER_REQUEST);
             }
             
-            console.log(posts)
-            console.log(postsData)
             setPosts(prevPosts => [...prevPosts, ...postsData]);
             setOffset(prevOffset => prevOffset + POSTS_PER_REQUEST);
             setIsMoreAvailable(postsData.length === POSTS_PER_REQUEST);

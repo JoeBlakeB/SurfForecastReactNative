@@ -5,7 +5,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Linking, ActivityIndicator, TouchableOpacity, Share } from "react-native";
 import { WebView } from "react-native-webview";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { HeaderStyleInterpolators } from "@react-navigation/stack";
+
+export const WebViewTypes = Object.freeze({ News: 1, Account: 2 });
+
+const MAX_RETRY_COUNT = 3;
+const SURFLINE_NEWS = "Surfline News";
 
 /**
  * WebViewScreen component displays a web page in a WebView after modifying its content.
@@ -13,8 +19,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 function WebViewScreen({ route, navigation }) {
     const [htmlContent, setHtmlContent] = useState("");
     const [loading, setLoading] = useState(true);
-    const url = route.params.url || null;
-    const title = route.params.title || "Web Page";
+    const [url, setUrl] = useState(route.params.url || null);
+    const [title, setTitle] = useState(route.params.title || "Web Page");
 
     if (!url) {
         navigation.goBack();
@@ -35,7 +41,7 @@ function WebViewScreen({ route, navigation }) {
 
     useEffect(() => {
         navigation.setOptions({ 
-            title: title,
+            title: route.params.type === WebViewTypes.News ? SURFLINE_NEWS : title,
             headerRight: () => (
                 <TouchableOpacity onPress={shareContent} style={styles.shareButton}>
                     <Ionicons name="share-social" size={24} color="black" />
@@ -45,6 +51,19 @@ function WebViewScreen({ route, navigation }) {
         fetchHtmlContent(url);
     }, [navigation, url]);
 
+    const showErrorHtml = (message) => {
+        setHtmlContent(`<html>
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>body { justify-content: center; padding: 20px; }</style>
+            </head>
+            <body><div>
+                <h1>Oops!</h1>
+                <p>${message}</p>
+            </div></body>
+        </html>`);
+    };
+
     /**
      * Get and process the page to display to the user, removing its
      * header and footer, and script tags, and injecting some extra CSS.
@@ -53,8 +72,34 @@ function WebViewScreen({ route, navigation }) {
      */
     const fetchHtmlContent = async (url) => {
         try {
-            const response = await fetch(url);
+            setLoading(true);
+            let response;
+            for (let i = 0; i < MAX_RETRY_COUNT; i++) {
+                response = await fetch(url);
+
+                if (response.status != 429)
+                    break;
+                else {
+                    console.warn("Too many requests, retrying in 5 seconds...");
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                }
+            }
+
+            if (response.status == 429) {
+                console.error("Too many requests, aborting...");
+                showErrorHtml("Too many requests, please try again later.");
+                return;
+            }
+
             let text = await response.text();
+
+            const titleMatch = text.match(/<title>(.*?)<\/title>/i);
+            let currentTitle = title;
+            if (titleMatch && titleMatch[1]) {
+                currentTitle = titleMatch[1]
+                setTitle(currentTitle);
+            }
+            navigation.setOptions({ title: route.params.type === WebViewTypes.News ? SURFLINE_NEWS : currentTitle })
 
             text = text
                 .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
@@ -75,34 +120,52 @@ function WebViewScreen({ route, navigation }) {
             setHtmlContent(text);
         } catch (error) {
             console.error("Error fetching content:", error);
-            setHtmlContent(`<html>
-                <head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>body { justify-content: center; padding: 20px; }</style>
-                </head>
-                <body><div>
-                    <h1>Oops!</h1>
-                    <p>Something went wrong while fetching the content, please try again later.</p>
-                </div></body>
-            </html>`);
+            showErrorHtml("Something went wrong while fetching the content, please try again later.");
         } finally {
             setLoading(false);
         }
     };
 
     /**
-     * Stops the WebView from opening links within itself, and will open them in an external browser instead.
+     * Stops the WebView from opening links within itself, they will either be opened in an external browser instead,
+     * or will be opened by navigating to the correct tabs WebViewScreen.
+     * This also forces opening a new article from another to render it in the same way as first opening an article.
      *
      * @param {Object} request - The request object with a url property.
      * @returns {boolean} True if the request should continue, or false if it has been opened externally.
      */
     const handleShouldStartLoadWithRequest = (request) => {
-        const isExternalLink = request.url.startsWith("http://") || request.url.startsWith("https://");
-        if (isExternalLink) {
-            Linking.openURL(request.url);
+        const requestUrl = request.url;
+        const isExternalLink = requestUrl.startsWith("http://") || requestUrl.startsWith("https://");
+        if (!isExternalLink)
+            return true;
+        
+        const newsURLRegex = /^https:\/\/www\.surfline\.com\/surf-news\/[a-zA-Z0-9-]+\/\d+$/;
+        
+        if (newsURLRegex.test(requestUrl)) {
+            if (route.params.type === WebViewTypes.News) {
+                setUrl(requestUrl)
+            } else {
+                navigation.navigate("News");
+                navigation.navigate("News", { screen: "WebViewScreen", params: { url: requestUrl } });
+            }
             return false;
         }
-        return true;
+        
+        const accountURLRegex = /^https:\/\/www\.surfline\.com\/(terms-of-use|privacy-policy)/;
+        
+        if (accountURLRegex.test(requestUrl)) {
+            if (route.params.type === WebViewTypes.Account) {
+                setUrl(requestUrl)
+            } else {
+                navigation.navigate("Account");
+                navigation.navigate("Account", { screen: "WebViewScreen", params: { url: requestUrl } });
+            }
+            return false;
+        }
+        
+        Linking.openURL(requestUrl);
+        return false;
     };
 
     if (loading) {

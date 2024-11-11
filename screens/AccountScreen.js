@@ -6,7 +6,7 @@ import React, {useContext} from "react";
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import WebViewScreen from "./WebViewScreen";
+import WebViewScreen, {WebViewTypes} from "./WebViewScreen";
 import SettingsContext from "../components/SettingsContext";
 
 const Stack = createStackNavigator();
@@ -55,7 +55,7 @@ function AccountScreenNavigator() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Account Overview" component={AccountScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+            <Stack.Screen name="WebViewScreen" component={WebViewScreen} initialParams={{ type: WebViewTypes.Account }} />
         </Stack.Navigator>
     );
 }
