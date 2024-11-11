@@ -3,8 +3,9 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Linking, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Linking, ActivityIndicator, TouchableOpacity, Share } from "react-native";
 import { WebView } from "react-native-webview";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 /**
  * WebViewScreen component displays a web page in a WebView after modifying its content.
@@ -20,8 +21,27 @@ function WebViewScreen({ route, navigation }) {
         return null;
     }
 
+    const shareContent = async () => {
+        try {
+            await Share.share({
+                message: `${title}: ${url}`,
+                url: url,
+                title: title,
+            });
+        } catch (error) {
+            console.error("Error sharing content:", error);
+        }
+    };
+
     useEffect(() => {
-        navigation.setOptions({ title: title });
+        navigation.setOptions({ 
+            title: title,
+            headerRight: () => (
+                <TouchableOpacity onPress={shareContent} style={styles.shareButton}>
+                    <Ionicons name="share-social" size={24} color="black" />
+                </TouchableOpacity>
+            ),
+        });
         fetchHtmlContent(url);
     }, [navigation, url]);
 
@@ -41,14 +61,15 @@ function WebViewScreen({ route, navigation }) {
                 .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
                 .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
                 .replace(/<div[^>]*(id="sl-header-ad")[^>]*>[\s\S]*?<\/div>/gi, "")
-                .replace(/<button[^>]*(quiver-share-article__)[^>]*>[\s\S]*?<\/button>/gi, "");
+                .replace(/<button[^>]*(quiver-share-article__)[^>]*>[\s\S]*?<\/button>/gi, "")
+                .replace(/<noscript[^>]*>([\s\S]*?)<\/noscript>/gi, "<div>$1</div>");
 
             text = text.replace("</head>", `
                 <style>
                     main { overflow-x:hidden; }
                     main>div>div { padding-top: 8px!important; }
                     table { display:block; overflow:scroll; }
-                    .sl-editorial-author__container, .sl-editorial-article-bottom__social { display: none!important; }
+                    .sl-editorial-author__social, .sl-editorial-article-bottom__social { display: none!important; }
                 </style></head>`);
 
             setHtmlContent(text);
@@ -114,6 +135,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#fff",
     },
+    shareButton: {
+        marginRight: 12,
+    }
 });
 
 export default WebViewScreen;
