@@ -14,7 +14,7 @@ block:Home:4
 end
 
 space:2
-News-->Article
+News-->Article["Web View"]
 Account-->WebView["Web View"]
 
 block:Beach:4

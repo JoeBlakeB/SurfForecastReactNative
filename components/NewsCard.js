@@ -5,11 +5,11 @@
 import React from "react";
 import { Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
-function NewsCard({ title, subtitle, image, permalink }) {
+function NewsCard({ title, subtitle, image, permalink, onPress }) {
     return (
         <TouchableOpacity 
             style={styles.postCard}
-            onPress={() => console.log("Navigating to", permalink)}
+            onPress={() => onPress()}
             delayPressIn={50}
             activeOpacity={0.9}
         >

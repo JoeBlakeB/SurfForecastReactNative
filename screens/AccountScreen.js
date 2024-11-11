@@ -5,7 +5,7 @@
 import React, {useContext} from "react";
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { SafeAreaView  } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import WebViewScreen from "./WebViewScreen";
 import SettingsContext from "../components/SettingsContext";
 

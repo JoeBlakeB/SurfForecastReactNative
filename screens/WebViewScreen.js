@@ -39,14 +39,17 @@ function WebViewScreen({ route, navigation }) {
             text = text
                 .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
                 .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
-                .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "");
+                .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
+                .replace(/<div[^>]*(id="sl-header-ad")[^>]*>[\s\S]*?<\/div>/gi, "")
+                .replace(/<button[^>]*(quiver-share-article__)[^>]*>[\s\S]*?<\/button>/gi, "");
 
             text = text.replace("</head>", `
                 <style>
-                    main {overflow-x:hidden;}
-                    main>div>div {padding-top: 8px!important;}
-                    table {display:block; overflow:scroll;}
-                </style></head>`);    
+                    main { overflow-x:hidden; }
+                    main>div>div { padding-top: 8px!important; }
+                    table { display:block; overflow:scroll; }
+                    .sl-editorial-author__container, .sl-editorial-article-bottom__social { display: none!important; }
+                </style></head>`);
 
             setHtmlContent(text);
         } catch (error) {
@@ -94,7 +97,6 @@ function WebViewScreen({ route, navigation }) {
             <WebView 
                 source={{ html: htmlContent }} 
                 style={{ flex: 1 }} 
-                javaScriptEnabled={false}
                 onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
             />
         </View>
