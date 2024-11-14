@@ -47,6 +47,9 @@ const useNewsAPI = () => {
     const [offset, setOffset] = useState(0);
     const [isMoreAvailable, setIsMoreAvailable] = useState(true);
 
+    /**
+     * Get the next page of posts from the API, and add it to the post list.
+     */
     const fetchPosts = async () => {
         if (isLoading || !isMoreAvailable) return;
 
