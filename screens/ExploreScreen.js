@@ -8,8 +8,7 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import useMapAPI from "../components/MapAPI";
 
-const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.1, longitudeDelta: 0.05 } };
-
+const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };
 
 function ExploreScreen() {
     const [location, setLocation] = useState(TALBOT_CAMPUS_LOCATION.coords);
