@@ -44,6 +44,16 @@ const DEMO_SPOTS = {
     }
 };
 
+export class Spot {
+    constructor(spot) {
+        this.id = spot._id;
+        this.name = spot.name;
+        this.lat = spot.lat;
+        this.lon = spot.lon;
+        this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull : null;
+    }
+};
+
 const useMapAPI = () => {
     const { settings } = useContext(SettingsContext);
     const [spots, setSpots] = useState({});
@@ -75,7 +85,7 @@ const useMapAPI = () => {
         setSpots(prevSpots => {
             const newSpots = { ...prevSpots };
             data.data.spots.forEach(newSpot => {
-                newSpots[newSpot._id] = newSpot;
+                newSpots[newSpot._id] = new Spot(newSpot);
             });
             return newSpots;
         });
