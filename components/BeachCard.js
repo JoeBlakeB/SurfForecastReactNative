@@ -5,6 +5,7 @@
 import React from "react";
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
+import StarRating from "./StarRating";
 
 /**
  * @param {Spot} spot the spot to show on the card
@@ -16,13 +17,16 @@ function BeachCard({ spot }) {
             delayPressIn={50}
             activeOpacity={0.9}
         >
-            <Text style={styles.title}>{spot.name}</Text>
+            <View style={styles.rowFlex}>
+                <Text style={styles.title}>{spot.name}</Text>
+                <StarRating waveRating={ spot.rating } />
+            </View>
             <View style={styles.imageContainer}>
                 {spot.photo !== null ? (
                     <Image
-                        source={{ uri: spot.photo }}
-                        style={styles.image}
-                        resizeMode="cover"
+                    source={{ uri: spot.photo }}
+                    style={styles.image}
+                    resizeMode="cover"
                     />
                 ) : (
                     <View style={styles.mapContainer}>
@@ -50,18 +54,25 @@ const styles = StyleSheet.create({
     beachCard: {
         marginBottom: 8,
         backgroundColor: "white",
-        padding: 4,
         borderRadius: 8,
         overflow: "hidden",
+        flex: 1,
+    },
+    rowFlex: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: 8,
     },
     title: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: "bold",
         marginBottom: 4,
     },
     imageContainer: {
-        height: 190,
-        borderRadius: 8,
+        flex: 1,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
         overflow: "hidden",
     },
     image: {

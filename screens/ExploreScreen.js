@@ -3,8 +3,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { SafeAreaView} from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -47,6 +46,7 @@ function ExploreScreen() {
                 showsPointsOfInterest={false}
                 userLocationPriority={"low"}
                 showsMyLocationButton={false}
+                toolbarEnabled={false}
                 mapType={"hybrid"}
                 minZoomLevel={6}
                 maxZoomLevel={15}
@@ -79,10 +79,8 @@ const styles = StyleSheet.create({
     },
     detailsContainer: {
         height: 260,
-        padding: 20,
-        backgroundColor: "#fff",
-        borderTopWidth: 1,
-        borderTopColor: "#ddd",
+        padding: 8,
+        backgroundColor: "#e2e2e2",
     },
 });
 

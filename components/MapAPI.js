@@ -11,34 +11,38 @@ const DEMO_SPOTS = {
     data: {
         spots: [
             {
-                _id: "61395abb84ce2eb3d50066c8",
+                id: "61395abb84ce2eb3d50066c8",
                 name: "Swanage",
                 lat: 50.6133,
                 lon: -1.9567,
             },
             {
-                _id: "584204214e65fad6a7709cf4",
+                id: "584204214e65fad6a7709cf4",
                 name: "Bournemouth",
                 lat: 50.713,
-                lon: -1.877
+                lon: -1.877,
+                rating: "POOR"
             },
             {
-                _id: "584204214e65fad6a7709cee",
+                id: "584204214e65fad6a7709cee",
                 name: "Boscombe",
                 lat: 50.7175,
-                lon: -1.835
+                lon: -1.835,
+                rating: "FLAT"
             },
             {
-                _id: "613ba68936d5112d6d6b38b3",
+                id: "613ba68936d5112d6d6b38b3",
                 name: "Milford on Sea",
                 lat: 50.7209,
-                lon: -1.5929
+                lon: -1.5929,
+                rating: "FAIR"
             },
             {
-                _id: "613a73bdd66c4039f3633bcc",
+                id: "613a73bdd66c4039f3633bcc",
                 name: "Mudeford Harbour",
                 lat: 50.726,
-                lon: -1.7433
+                lon: -1.7433,
+                rating: "FAIR_TO_GOOD"
             }
         ]
     }
@@ -51,6 +55,7 @@ export class Spot {
         this.lat = spot.lat;
         this.lon = spot.lon;
         this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull : null;
+        this.rating = spot.conditions.value;
     }
 };
 
@@ -66,7 +71,6 @@ const useMapAPI = () => {
     const fetchSpots = async () => {
         if (fetchRegionQueue.length === 0) return;
 
-        let data;
         if (settings.useRealAPI) {
             const { top, bottom, left, right } = fetchRegionQueue[fetchRegionQueue.length - 1];
             const response = await fetch(
@@ -77,18 +81,19 @@ const useMapAPI = () => {
                 return;
             }
 
-            data = await response.json();
+            const data = await response.json();
+            
+            setSpots(prevSpots => {
+                const newSpots = { ...prevSpots };
+                data.data.spots.forEach(newSpot => {
+                    newSpots[newSpot._id] = new Spot(newSpot);
+                });
+                return newSpots;
+            });
         } else {
-            data = DEMO_SPOTS;
+            setSpots(DEMO_SPOTS.data.spots);
         }
         
-        setSpots(prevSpots => {
-            const newSpots = { ...prevSpots };
-            data.data.spots.forEach(newSpot => {
-                newSpots[newSpot._id] = new Spot(newSpot);
-            });
-            return newSpots;
-        });
         
         setFetchRegionQueue(fetchRegionQueue.slice(0, -1));
     };
