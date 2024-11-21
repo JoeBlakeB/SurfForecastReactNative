@@ -22,7 +22,7 @@ function BeachCard({ spot }) {
                 <StarRating waveRating={ spot.rating } />
             </View>
             <View style={styles.imageContainer}>
-                {spot.photo !== null ? (
+                {spot.photo ? (
                     <Image
                     source={{ uri: spot.photo }}
                     style={styles.image}
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         overflow: "hidden",
         flex: 1,
+        width: "100%",
     },
     rowFlex: {
         flexDirection: "row",

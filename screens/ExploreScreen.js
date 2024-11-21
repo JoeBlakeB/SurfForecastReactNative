@@ -3,14 +3,17 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import Carousel from "react-native-reanimated-carousel";
 import useMapAPI from "../components/MapAPI";
 import BeachCard from "../components/BeachCard";
 
 const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };
+
+const { width: screenWidth } = Dimensions.get("window");
 
 function ExploreScreen() {
     const [location, setLocation] = useState(TALBOT_CAMPUS_LOCATION.coords);
@@ -31,6 +34,16 @@ function ExploreScreen() {
             }
         })();
     }, []);
+
+    const onCarouselItemChange = (index) => {
+        const spot = Object.values(spots)[index];
+        setLocation({
+            latitude: spot.lat,
+            longitude: spot.lon,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
+        });
+    };
 
     return (
         <View style={styles.container}>
@@ -61,13 +74,23 @@ function ExploreScreen() {
                 ))}
             </MapView>
 
-            {selectedBeach && (
-                <View style={styles.detailsContainer}>
-                    <BeachCard spot={selectedBeach} />
-                </View>
-            )}
+            <View style={styles.carouselContainer}>
+                <Carousel
+                    data={Object.values(spots)}
+                    renderItem={({ item }) => <BeachCard spot={item} />}
+                    width={screenWidth}
+                    height={250}
+                    onSnapToItem={onCarouselItemChange}
+                    loop={true}
+                    mode={"parallax"}
+                    modeConfig={{
+                        parallaxScrollingScale: 0.9,
+                        parallaxScrollingOffset: 50,
+                    }}
+                />
+            </View>
         </View>
-    );  
+    );
 }
 
 const styles = StyleSheet.create({
@@ -77,8 +100,9 @@ const styles = StyleSheet.create({
     map: {
         flex: 1,
     },
-    detailsContainer: {
+    carouselContainer: {
         height: 260,
+        width: "100%",
         padding: 8,
         backgroundColor: "#e2e2e2",
     },
