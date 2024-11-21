@@ -2,7 +2,6 @@
  * @fileoverview A single spot card to be used within a list on the explore screen.
  */
 
-import React from "react";
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 import StarRating from "./StarRating";
@@ -10,7 +9,7 @@ import StarRating from "./StarRating";
 /**
  * @param {Spot} spot the spot to show on the card
  */
-function BeachCard({ spot }) {
+function BeachCard({ spot, renderMedia=true }) {
     return (
         <TouchableOpacity
             style={styles.beachCard}
@@ -24,11 +23,11 @@ function BeachCard({ spot }) {
             <View style={styles.imageContainer}>
                 {spot.photo ? (
                     <Image
-                    source={{ uri: spot.photo }}
-                    style={styles.image}
-                    resizeMode="cover"
+                        source={{ uri: renderMedia ? spot.photo : null }}
+                        style={styles.image}
+                        resizeMode="cover"
                     />
-                ) : (
+                ) : renderMedia ? (
                     <View style={styles.mapContainer}>
                         <MapView
                             style={styles.map}
@@ -44,7 +43,7 @@ function BeachCard({ spot }) {
                         />
                         <Text style={styles.noCamerasText}>No Cameras Available</Text>
                     </View>
-                )}
+                ) : null}
             </View>
         </TouchableOpacity>
     );

@@ -18,6 +18,7 @@ const { width: screenWidth } = Dimensions.get("window");
 function ExploreScreen() {
     const [location, setLocation] = useState(TALBOT_CAMPUS_LOCATION.coords);
     const [selectedBeach, setSelectedBeach] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const { spots, getSpotsForRegion } = useMapAPI();
 
     useEffect(() => {
@@ -34,7 +35,7 @@ function ExploreScreen() {
             }
         })();
     }, []);
-
+    
     const onCarouselItemChange = (index) => {
         const spot = Object.values(spots)[index];
         setLocation({
@@ -43,6 +44,8 @@ function ExploreScreen() {
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
         });
+
+        setCurrentIndex(index);
     };
 
     return (
@@ -74,21 +77,28 @@ function ExploreScreen() {
                 ))}
             </MapView>
 
-            <View style={styles.carouselContainer}>
+            {spots && (<View style={styles.carouselContainer}>
                 <Carousel
                     data={Object.values(spots)}
-                    renderItem={({ item }) => <BeachCard spot={item} />}
+                    renderItem={({ item, index }) => {return (Math.abs(currentIndex - index) <= 2) ? (
+                            <BeachCard
+                                spot={item}
+                                renderMedia={Math.abs(currentIndex - index) <= 1}
+                            />
+                        ) : (null)}}
                     width={screenWidth}
                     height={250}
                     onSnapToItem={onCarouselItemChange}
-                    loop={true}
+                    loop={false}
                     mode={"parallax"}
+                    defaultIndex={0}
                     modeConfig={{
                         parallaxScrollingScale: 0.9,
-                        parallaxScrollingOffset: 50,
+                        parallaxScrollingOffset: 52,
                     }}
                 />
             </View>
+            )}
         </View>
     );
 }
@@ -101,9 +111,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     carouselContainer: {
-        height: 260,
+        height: 240,
         width: "100%",
-        padding: 8,
         backgroundColor: "#e2e2e2",
     },
 });
