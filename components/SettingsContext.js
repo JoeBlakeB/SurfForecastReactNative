@@ -10,12 +10,16 @@ export const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
     const [useRealAPI, setUseRealAPI] = useState(true);
+    const [favoriteSpots, setFavoriteSpots] = useState([]);
 
     useEffect(() => {
         const loadSettings = async () => {
             try {
                 const savedUseRealAPI = await AsyncStorage.getItem("useRealAPI");
                 setUseRealAPI(savedUseRealAPI !== null ? JSON.parse(savedUseRealAPI) : true);
+
+                const savedFavorites = await AsyncStorage.getItem("favoriteSpots");
+                setFavoriteSpots(savedFavorites ? JSON.parse(savedFavorites) : []);
             } catch (error) {
                 console.error("Failed to load settings from storage:", error);
             }
@@ -29,7 +33,15 @@ export const SettingsProvider = ({ children }) => {
         await AsyncStorage.setItem("useRealAPI", JSON.stringify(newValue));
     };
 
-    const settings = {useRealAPI, toggleUseRealAPI};
+    const updateFavorites = async (newFavorites) => {
+        setFavoriteSpots(newFavorites);
+        await AsyncStorage.setItem("favoriteSpots", JSON.stringify(newFavorites));
+    };
+
+    const settings = {
+        useRealAPI, toggleUseRealAPI,
+        favoriteSpots, updateFavorites,
+    };
 
     return (
         <SettingsContext.Provider value={{ settings }}>

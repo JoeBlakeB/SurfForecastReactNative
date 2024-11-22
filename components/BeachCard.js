@@ -5,11 +5,26 @@
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 import StarRating from "./StarRating";
+import { useContext, useState } from "react";
+import { SettingsContext } from "./SettingsContext.js";
+import FontAwesome from "react-native-vector-icons/AntDesign";
 
 /**
  * @param {Spot} spot the spot to show on the card
  */
 function BeachCard({ spot, renderMedia=true }) {
+    const { settings } = useContext(SettingsContext);
+    const [isFavorite, setIsFavorite] = useState(settings.favoriteSpots.includes(spot.id));
+
+    const handleFavoriteToggle = async () => {
+        const newFavorites = isFavorite
+            ? settings.favoriteSpots.filter(id => id !== spot.id) 
+            : [...settings.favoriteSpots, spot.id];
+        
+        await settings.updateFavorites(newFavorites);
+        setIsFavorite(!isFavorite);
+    };
+
     return (
         <TouchableOpacity
             style={styles.beachCard}
@@ -44,6 +59,13 @@ function BeachCard({ spot, renderMedia=true }) {
                         <Text style={styles.noCamerasText}>No Cameras Available</Text>
                     </View>
                 ) : null}
+
+                <TouchableOpacity
+                    style={styles.favoriteButton}
+                    onPress={handleFavoriteToggle}
+                >
+                    <FontAwesome name={isFavorite ? "heart" : "hearto"} size={40} color={isFavorite ? "red" : "white"} />
+                </TouchableOpacity>
             </View>
         </TouchableOpacity>
     );
@@ -74,6 +96,7 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         overflow: "hidden",
+        position: "relative",
     },
     image: {
         width: "100%",
@@ -94,6 +117,14 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         fontSize: 12,
         fontWeight: "bold",
+    },
+    favoriteButton: {
+        position: "absolute",
+        top: 8,
+        right: 8,
+        backgroundColor: "rgba(0, 0, 0, 0.25)",
+        borderRadius: 16,
+        padding: 8,
     },
 });
 
