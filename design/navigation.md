@@ -7,7 +7,7 @@ block-beta
 columns 4
 
 block:Home:4
-    Favorites
+    Spots["Spot Guide"]
     Explore
     News
     Account
@@ -18,15 +18,16 @@ News-->Article["Web View"]
 Account-->WebView["Web View"]
 
 block:Beach:4
-    Favorites-->Today
+    Spots-->Today
     Explore-->Today
     Today["Todays Summary"]
-    Forecast["16 Day Forecast"]
+    Forecast["Forecast"]
 end
 
 space:4
+Camera:2
 Today-->Camera["Live Camera"]
 
-style Favorites fill:#749
+style Spots fill:#749
 style Today fill:#749
 ```

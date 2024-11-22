@@ -5,10 +5,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-function FavoritesScreen() {
+function SpotsScreen() {
     return (
         <View style={styles.container}>
-            <Text>favorites</Text>
+            <Text>Spots</Text>
         </View>
     );
 }
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FavoritesScreen;
+export default SpotsScreen;

@@ -1,10 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AccountScreen from "./screens/AccountScreen";
 import ExploreScreen from "./screens/ExploreScreen";
-import FavoritesScreen from "./screens/FavoritesScreen";
+import SpotsScreen from "./screens/SpotsScreen";
 import NewsScreen from "./screens/NewsScreen";
 import { SettingsProvider } from "./components/SettingsContext";
 
@@ -29,7 +28,7 @@ export default function App() {
         <SettingsProvider>
             <NavigationContainer>
                 <Tab.Navigator>
-                    <Tab.Screen name="Favorites" component={FavoritesScreen} options={{tabBarIcon: TabIcon(AntDesign, "star", "staro")}}/>
+                    <Tab.Screen name="Spots" component={SpotsScreen} options={{tabBarIcon: TabIcon(Ionicons, "location", "location-outline")}}/>
                     <Tab.Screen name="Explore" component={ExploreScreen} options={{tabBarIcon: TabIcon(Ionicons, "map", "map-outline")}}/>
                     <Tab.Screen name="News" component={NewsScreen} options={{tabBarIcon: TabIcon(Ionicons, "newspaper", "newspaper-outline")}}/>
                     <Tab.Screen name="Account" component={AccountScreen} options={{tabBarIcon: TabIcon(Ionicons, "settings-sharp", "settings-outline")}}/>
