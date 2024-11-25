@@ -5,7 +5,7 @@ import AccountScreen from "./screens/AccountScreen";
 import ExploreScreen from "./screens/ExploreScreen";
 import SpotsScreen from "./screens/SpotsScreen";
 import NewsScreen from "./screens/NewsScreen";
-import { SettingsProvider } from "./components/SettingsContext";
+import { SettingsProvider } from "./components/data/SettingsContext";
 
 const Tab = createMaterialBottomTabNavigator();
 

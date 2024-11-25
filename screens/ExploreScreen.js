@@ -8,7 +8,7 @@ import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Carousel from "react-native-reanimated-carousel";
-import useMapAPI from "../components/MapAPI";
+import useMapAPI from "../components/data/MapAPI";
 import BeachCard from "../components/BeachCard";
 
 const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };

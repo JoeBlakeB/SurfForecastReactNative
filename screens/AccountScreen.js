@@ -7,7 +7,7 @@ import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WebViewScreen, {WebViewTypes} from "./WebViewScreen";
-import SettingsContext from "../components/SettingsContext";
+import SettingsContext from "../components/data/SettingsContext";
 
 const Stack = createStackNavigator();
 

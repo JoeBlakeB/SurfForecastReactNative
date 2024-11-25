@@ -6,7 +6,7 @@ import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 import StarRating from "./StarRating";
 import { useContext, useState } from "react";
-import { SettingsContext } from "./SettingsContext.js";
+import { SettingsContext } from "./data/SettingsContext.js";
 import FontAwesome from "react-native-vector-icons/AntDesign";
 
 /**
