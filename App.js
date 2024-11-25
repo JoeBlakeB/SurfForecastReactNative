@@ -6,6 +6,7 @@ import ExploreScreen from "./screens/ExploreScreen";
 import SpotsScreen from "./screens/SpotsScreen";
 import NewsScreen from "./screens/NewsScreen";
 import { SettingsProvider } from "./components/data/SettingsContext";
+import { SpotAPIProvider } from "./components/data/SpotAPIContext";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -26,14 +27,16 @@ const TabIcon = (Component, iconNameFocused, iconNameUnfocused) => {
 export default function App() {
     return (
         <SettingsProvider>
-            <NavigationContainer>
-                <Tab.Navigator>
-                    <Tab.Screen name="Spots" component={SpotsScreen} options={{tabBarIcon: TabIcon(Ionicons, "location", "location-outline")}}/>
-                    <Tab.Screen name="Explore" component={ExploreScreen} options={{tabBarIcon: TabIcon(Ionicons, "map", "map-outline")}}/>
-                    <Tab.Screen name="News" component={NewsScreen} options={{tabBarIcon: TabIcon(Ionicons, "newspaper", "newspaper-outline")}}/>
-                    <Tab.Screen name="Account" component={AccountScreen} options={{tabBarIcon: TabIcon(Ionicons, "settings-sharp", "settings-outline")}}/>
-                </Tab.Navigator>
-            </NavigationContainer>
+            <SpotAPIProvider>
+                <NavigationContainer>
+                    <Tab.Navigator>
+                        <Tab.Screen name="Spots" component={SpotsScreen} options={{tabBarIcon: TabIcon(Ionicons, "location", "location-outline")}}/>
+                        <Tab.Screen name="Explore" component={ExploreScreen} options={{tabBarIcon: TabIcon(Ionicons, "map", "map-outline")}}/>
+                        <Tab.Screen name="News" component={NewsScreen} options={{tabBarIcon: TabIcon(Ionicons, "newspaper", "newspaper-outline")}}/>
+                        <Tab.Screen name="Account" component={AccountScreen} options={{tabBarIcon: TabIcon(Ionicons, "settings-sharp", "settings-outline")}}/>
+                    </Tab.Navigator>
+                </NavigationContainer>
+            </SpotAPIProvider>
         </SettingsProvider>
     );
 }

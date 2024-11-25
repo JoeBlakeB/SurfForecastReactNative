@@ -1,54 +1,50 @@
 /**
- * @fileoverview The API access for the beach locations on the map
+ * @fileoverview This file provides a context for accessing Surfline's API for spot data
  */
 
-import { useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import SettingsContext from "./SettingsContext";
 
 const GET_EXTRA_DELTA = 0.4;
 
-const DEMO_SPOTS = {
-    data: {
-        spots: [
-            {
-                id: "61395abb84ce2eb3d50066c8",
-                name: "Swanage",
-                lat: 50.6133,
-                lon: -1.9567,
-            },
-            {
-                id: "584204214e65fad6a7709cf4",
-                name: "Bournemouth",
-                lat: 50.713,
-                lon: -1.877,
-                rating: "POOR"
-            },
-            {
-                id: "584204214e65fad6a7709cee",
-                name: "Boscombe",
-                lat: 50.7175,
-                lon: -1.835,
-                rating: "FLAT"
-            },
-            {
-                id: "613ba68936d5112d6d6b38b3",
-                name: "Milford on Sea",
-                lat: 50.7209,
-                lon: -1.5929,
-                rating: "FAIR"
-            },
-            {
-                id: "613a73bdd66c4039f3633bcc",
-                name: "Mudeford Harbour",
-                lat: 50.726,
-                lon: -1.7433,
-                rating: "FAIR_TO_GOOD"
-            }
-        ]
+const DEMO_SPOTS = [
+    {
+        id: "61395abb84ce2eb3d50066c8",
+        name: "Swanage",
+        lat: 50.613,
+        lon: -1.956,
+    },
+    {
+        id: "584204214e65fad6a7709cf4",
+        name: "Bournemouth",
+        lat: 50.713,
+        lon: -1.877,
+        rating: "POOR"
+    },
+    {
+        id: "584204214e65fad6a7709cee",
+        name: "Boscombe",
+        lat: 50.717,
+        lon: -1.835,
+        rating: "FLAT"
+    },
+    {
+        id: "613ba68936d5112d6d6b38b3",
+        name: "Milford on Sea",
+        lat: 50.720,
+        lon: -1.592,
+        rating: "FAIR"
+    },
+    {
+        id: "613a73bdd66c4039f3633bcc",
+        name: "Mudeford Harbour",
+        lat: 50.726,
+        lon: -1.743,
+        rating: "FAIR_TO_GOOD"
     }
-};
+];
 
-export class Spot {
+class Spot {
     constructor(spot) {
         this.id = spot._id;
         this.name = spot.name;
@@ -57,13 +53,24 @@ export class Spot {
         this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull : null;
         this.rating = spot.conditions.value;
     }
+
+    update(spot) {
+        this.rating = spot.conditions.value;
+    }
 };
 
-const useMapAPI = () => {
+export const SpotAPIContext = createContext();
+
+export const SpotAPIProvider = ({ children }) => {
     const { settings } = useContext(SettingsContext);
-    const [spots, setSpots] = useState({});
     const [storedRegions, setStoredRegions] = useState([]);
     const [fetchRegionQueue, setFetchRegionQueue] = useState([]);
+
+    /**
+     * @property {Object} spots an object with Spot objects with their id as the key
+     */
+    const [spots, setSpots] = useState({});
+
 
     /**
      * Get the next region in the queue to of regions to fetch.
@@ -85,19 +92,23 @@ const useMapAPI = () => {
             
             setSpots(prevSpots => {
                 const newSpots = { ...prevSpots };
-                data.data.spots.forEach(newSpot => {
-                    newSpots[newSpot._id] = new Spot(newSpot);
+                data.data.spots.forEach(spotData => {
+                    if (newSpots[spotData._id]) {
+                        newSpots[spotData._id].update(spotData);
+                    } else {
+                        newSpots[spotData._id] = new Spot(spotData);
+                    }
                 });
                 return newSpots;
             });
         } else {
-            setSpots(DEMO_SPOTS.data.spots);
+            setSpots(DEMO_SPOTS);
+            setStoredRegions([]);
         }
-        
-        
+
         setFetchRegionQueue(fetchRegionQueue.slice(0, -1));
     };
-    
+
     useEffect(() => {
         fetchSpots();
     }, [fetchRegionQueue]);
@@ -139,7 +150,16 @@ const useMapAPI = () => {
         }
     };
 
-    return { spots, getSpotsForRegion };
+    const spotAPI = {
+        spots,
+        getSpotsForRegion
+    };
+
+    return (
+        <SpotAPIContext.Provider value={{ spotAPI }}>
+            {children}
+        </SpotAPIContext.Provider>
+    );
 };
 
-export default useMapAPI;
+export default SpotAPIContext;

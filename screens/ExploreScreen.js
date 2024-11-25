@@ -2,13 +2,13 @@
  * @fileoverview This is the explore tab screen, with a map for discovering new places to go
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Carousel from "react-native-reanimated-carousel";
-import useMapAPI from "../components/data/MapAPI";
+import SpotAPIContext from "../components/data/SpotAPIContext";
 import BeachCard from "../components/BeachCard";
 
 const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };
@@ -34,7 +34,7 @@ function ExploreScreen() {
     const [location, setLocation] = useState(TALBOT_CAMPUS_LOCATION.coords);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [sortedSpots, setSortedSpots] = useState([]);
-    const { spots, getSpotsForRegion } = useMapAPI();
+    const { spotAPI } = useContext(SpotAPIContext);
     const carouselRef = useRef(null);
     const markerRefs = useRef({});
 
@@ -62,7 +62,7 @@ function ExploreScreen() {
      */
     useEffect(() => {
         if (userLocation) {
-            const sorted = Object.values(spots)
+            const sorted = Object.values(spotAPI.spots)
                 .map(spot => ({
                     ...spot,
                     distance: haversine(userLocation, spot),
@@ -70,7 +70,7 @@ function ExploreScreen() {
                 .sort((a, b) => a.distance - b.distance);
             setSortedSpots(sorted);
         }
-    }, [userLocation, spots]);
+    }, [userLocation, spotAPI.spots]);
 
     /**
      * Go to the correct spot on the map going to another location on the carousel
@@ -116,7 +116,7 @@ function ExploreScreen() {
             <MapView
                 style={styles.map}
                 region={location}
-                onRegionChangeComplete={getSpotsForRegion}
+                onRegionChangeComplete={spotAPI.getSpotsForRegion}
                 showsUserLocation={true}
                 loadingEnabled={true}
                 scrollEnabled={true}
@@ -130,7 +130,7 @@ function ExploreScreen() {
                 minZoomLevel={6}
                 maxZoomLevel={15}
             >
-                {Object.values(spots).map((spot) => (
+                {Object.values(spotAPI.spots).map((spot) => (
                     <Marker
                         key={spot.id}
                         coordinate={{ latitude: spot.lat, longitude: spot.lon }}
@@ -143,7 +143,7 @@ function ExploreScreen() {
                 ))}
             </MapView>
 
-            {spots && (<View style={styles.carouselContainer}>
+            {sortedSpots && (<View style={styles.carouselContainer}>
                 <Carousel
                     ref={carouselRef}
                     data={Object.values(sortedSpots)}
