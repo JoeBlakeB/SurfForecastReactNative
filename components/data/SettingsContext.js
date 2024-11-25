@@ -3,7 +3,7 @@
  * which are instantly reflected within all components.
  */
 
-import React, {createContext, useState, useEffect} from "react";
+import { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SettingsContext = createContext();

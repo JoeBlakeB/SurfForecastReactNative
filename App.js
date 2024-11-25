@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import AccountScreen from "./screens/AccountScreen";
 import ExploreScreen from "./screens/ExploreScreen";
 import SpotsScreen from "./screens/SpotsScreen";

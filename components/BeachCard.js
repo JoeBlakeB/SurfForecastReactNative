@@ -2,12 +2,12 @@
  * @fileoverview A single spot card to be used within a list on the explore screen.
  */
 
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
+import { AntDesign } from "@expo/vector-icons";
 import StarRating from "./StarRating";
-import { useContext, useState } from "react";
-import { SettingsContext } from "./data/SettingsContext.js";
-import FontAwesome from "react-native-vector-icons/AntDesign";
+import { SettingsContext } from "./data/SettingsContext";
 
 /**
  * @param {Spot} spot the spot to show on the card
@@ -64,7 +64,7 @@ function BeachCard({ spot, renderMedia=true }) {
                     style={styles.favoriteButton}
                     onPress={handleFavoriteToggle}
                 >
-                    <FontAwesome name={isFavorite ? "heart" : "hearto"} size={40} color={isFavorite ? "red" : "white"} />
+                    <AntDesign name={isFavorite ? "heart" : "hearto"} size={40} color={isFavorite ? "red" : "white"} />
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>

@@ -2,11 +2,10 @@
  * @fileoverview This is the news tab screen, for surflines news feed
  */
 
-import React from "react";
 import { StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import WebViewScreen, {WebViewTypes} from "./WebViewScreen";
+import WebViewScreen, { WebViewTypes } from "./WebViewScreen";
 import useNewsAPI from "../components/data/NewsAPI";
 import NewsCard from "../components/NewsCard";
 

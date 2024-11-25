@@ -2,7 +2,6 @@
  * @fileoverview A single news item to be used within a news list on the news screen.
  */
 
-import React from "react";
 import { Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 function NewsCard({ title, subtitle, image, permalink, onPress }) {

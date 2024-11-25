@@ -2,11 +2,10 @@
  * @fileoverview This is a basic webview screen, which will display a page, after removing its header/footer
  */
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View, Linking, ActivityIndicator, TouchableOpacity, Share } from "react-native";
 import { WebView } from "react-native-webview";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { HeaderStyleInterpolators } from "@react-navigation/stack";
+import { Ionicons } from "@expo/vector-icons";
 
 export const WebViewTypes = Object.freeze({ News: 1, Account: 2 });
 
