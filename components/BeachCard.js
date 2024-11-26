@@ -2,29 +2,15 @@
  * @fileoverview A single spot card to be used within a list on the explore screen.
  */
 
-import { useContext, useState } from "react";
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
-import { AntDesign } from "@expo/vector-icons";
 import StarRating from "./StarRating";
-import { SettingsContext } from "./data/SettingsContext";
+import SpotFavoriteButton from "./SpotFavoriteButton"
 
 /**
  * @param {Spot} spot the spot to show on the card
  */
 function BeachCard({ spot, renderMedia=true }) {
-    const { settings } = useContext(SettingsContext);
-    const [isFavorite, setIsFavorite] = useState(settings.favoriteSpots.includes(spot.id));
-
-    const handleFavoriteToggle = async () => {
-        const newFavorites = isFavorite
-            ? settings.favoriteSpots.filter(id => id !== spot.id) 
-            : [...settings.favoriteSpots, spot.id];
-        
-        await settings.updateFavorites(newFavorites);
-        setIsFavorite(!isFavorite);
-    };
-
     return (
         <TouchableOpacity
             style={styles.beachCard}
@@ -60,12 +46,7 @@ function BeachCard({ spot, renderMedia=true }) {
                     </View>
                 ) : null}
 
-                <TouchableOpacity
-                    style={styles.favoriteButton}
-                    onPress={handleFavoriteToggle}
-                >
-                    <AntDesign name={isFavorite ? "heart" : "hearto"} size={40} color={isFavorite ? "red" : "white"} />
-                </TouchableOpacity>
+                <SpotFavoriteButton spotID={spot.id} style={styles.favoriteButton} />
             </View>
         </TouchableOpacity>
     );
@@ -122,9 +103,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 8,
         right: 8,
-        backgroundColor: "rgba(0, 0, 0, 0.25)",
-        borderRadius: 16,
-        padding: 8,
     },
 });
 
