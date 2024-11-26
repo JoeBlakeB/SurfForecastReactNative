@@ -50,19 +50,17 @@ const useNewsAPI = () => {
     /**
      * Get the next page of posts from the API, and add it to the post list.
      */
-    const fetchPosts = async () => {
-        if (isLoading || !isMoreAvailable) return;
-
+    const fetchPosts = async (postOffset) => {
         setLoading(true);
         try {
             let postsData
             if (settings.useRealAPI) {
                 const response = await fetch(
-                    `https://www.surfline.com/wp-json/sl/v1/taxonomy/posts/category?limit=${POSTS_PER_REQUEST}&offset=${offset}&geotarget=EU`
+                    `https://www.surfline.com/wp-json/sl/v1/taxonomy/posts/category?limit=${POSTS_PER_REQUEST}&offset=${postOffset}&geotarget=EU`
                 );
                 postsData = (await response.json()).posts;
             } else {
-                postsData = DEMO_POSTS.slice(offset, offset + POSTS_PER_REQUEST);
+                postsData = DEMO_POSTS.slice(postOffset, postOffset + POSTS_PER_REQUEST);
             }
             
             setPosts(prevPosts => [...prevPosts, ...postsData]);
@@ -76,14 +74,17 @@ const useNewsAPI = () => {
     };
 
     const loadMorePosts = () => {
-        if (!isLoading && isMoreAvailable) {
-            fetchPosts();
-        }
+        if (isLoading || !isMoreAvailable) return;
+        fetchPosts(offset);
     };
 
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        setPosts([]);
+        setOffset(0);
+        setLoading(false);
+        setIsMoreAvailable(true);
+        fetchPosts(0);
+    }, [settings.useRealAPI]);
 
     return { posts, isLoading, loadMorePosts };
 };
