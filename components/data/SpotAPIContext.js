@@ -29,23 +29,29 @@ class Spot {
         let spot, conditions;
         if (data._id === undefined && data.spot !== undefined) {
             spot = data.spot;
-            conditions = data.forecast.conditions;
+            forecast = data.forecast;
         } else {
             spot = data;
-            conditions = data.conditions;
+            forecast = data;
         }
 
         this.name = spot.name;
         this.lat = spot.lat;
         this.lon = spot.lon;
         this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull : null;
-        this.rating = conditions.value;
+        this.rating = forecast.conditions.value;
+        this.waveHeight = {
+            min: forecast.waveHeight.min,
+            max: forecast.waveHeight.max,
+            humanRelation: forecast.waveHeight.humanRelation,
+        };
     }
 };
 
 const DEMO_SPOTS = (() => {
     let spots = {};
     const possibleRatings = ["FLAT", "POOR", "POOR_TO_FAIR", "FAIR", "GOOD", "EPIC"];
+    const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "Your'e gonna drown lol"];
 
     for (let spot of [
         {
@@ -81,6 +87,15 @@ const DEMO_SPOTS = (() => {
     ]) {
         spot.cameras = [];
         spot.conditions = {value: possibleRatings[Math.floor(Math.random() * possibleRatings.length)]};
+
+        waveMin = Math.floor(Math.random() * 6) * 2;
+        waveMax = waveMin + 2;
+        spot.waveHeight = {
+            min: waveMin,
+            max: waveMax,
+            humanRelation: possibleWaveHeights[Math.floor(Math.random() * possibleWaveHeights.length)]
+        };
+
         spots[spot._id] = new Spot(spot);
     }
 

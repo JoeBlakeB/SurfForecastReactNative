@@ -6,6 +6,7 @@ import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 import StarRating from "./StarRating";
 import SpotFavoriteButton from "./SpotFavoriteButton"
+import { waveHeightToColour } from "./Utils";
 
 /**
  * @param {Spot} spot the spot to show on the card
@@ -46,6 +47,12 @@ function BeachCard({ spot, renderMedia=true }) {
                     </View>
                 ) : null}
 
+                <Text style={[
+                        styles.waveHeight,
+                        {backgroundColor: waveHeightToColour(spot.waveHeight?.min)}
+                ]}>
+                    {spot.waveHeight?.humanRelation}
+                </Text>
                 <SpotFavoriteButton spotID={spot.id} style={styles.favoriteButton} />
             </View>
         </TouchableOpacity>
@@ -103,6 +110,17 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 8,
         right: 8,
+    },
+    waveHeight: {
+        position: "absolute",
+        top: 8,
+        left: 8,
+        color: "white",
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 4,
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 
