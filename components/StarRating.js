@@ -25,21 +25,23 @@ const RATINGS = {
 /**
  * @param {string} waveRating the surfline rating
  */
-const StarRating = ({ waveRating }) => {
+const StarRating = ({ waveRating, starSize=24 }) => {
     const stars = RATINGS[waveRating] || 0;
 
     const fullStars = Math.floor(stars);
     const halfStar = stars % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
+    const starStyle = [styles.star, {fontSize: starSize}];
+
     return (
         <View style={styles.container}>
             {[...Array(fullStars)].map((_, index) => (
-                <FontAwesome key={`full-${index}`} name="star" style={styles.star} />
+                <FontAwesome key={`full-${index}`} name="star" style={starStyle} />
             ))}
-            {halfStar && <FontAwesome name="star-half-o" style={styles.star} />}
+            {halfStar && <FontAwesome name="star-half-o" style={starStyle} />}
             {[...Array(emptyStars)].map((_, index) => (
-                <FontAwesome key={`empty-${index}`} name="star-o" style={styles.star} />
+                <FontAwesome key={`empty-${index}`} name="star-o" style={starStyle} />
             ))}
         </View>
     );
@@ -51,13 +53,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         flexDirection: "row",
     },
-    text: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 5,
-    },
     star: {
-        fontSize: 24,
         color: "#FFD700",
         marginHorizontal: 2,
     },

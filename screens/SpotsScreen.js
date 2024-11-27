@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import SettingsContext from "../components/data/SettingsContext";
 import SpotAPIContext from "../components/data/SpotAPIContext";
-import BeachCard from "../components/BeachCard";
+import SpotForecastCard from "../components/SpotForecastCard";
 
 function SpotsScreen() {
     const { settings } = useContext(SettingsContext);
@@ -19,7 +19,7 @@ function SpotsScreen() {
     return (
         <View style={styles.container}>
             {settings.favoriteSpots.map((spotID) => (
-                <BeachCard
+                <SpotForecastCard
                     key={spotID}
                     spot={spotAPI.getSpot(spotID)}
                 />
@@ -31,9 +31,10 @@ function SpotsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#e9e9e9",
         alignItems: "center",
         justifyContent: "center",
+        padding: 8,
     },
 });
 

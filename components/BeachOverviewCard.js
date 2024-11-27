@@ -11,7 +11,7 @@ import { waveHeightToColour } from "./Utils";
 /**
  * @param {Spot} spot the spot to show on the card
  */
-function BeachCard({ spot, renderMedia=true }) {
+function BeachOverviewCard({ spot, renderMedia=true }) {
     return (
         <TouchableOpacity
             style={styles.beachCard}
@@ -124,4 +124,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BeachCard;
+export default BeachOverviewCard;
