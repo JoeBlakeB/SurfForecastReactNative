@@ -51,7 +51,7 @@ class Spot {
 const DEMO_SPOTS = (() => {
     let spots = {};
     const possibleRatings = ["FLAT", "POOR", "POOR_TO_FAIR", "FAIR", "GOOD", "EPIC"];
-    const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "Your'e gonna drown lol"];
+    const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "You're gonna drown lol"];
 
     for (let spot of [
         {

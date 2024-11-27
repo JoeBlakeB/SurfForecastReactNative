@@ -17,17 +17,28 @@ function SpotForecastCard({ spot }) {
             activeOpacity={0.9}
         >
             <View style={styles.leftContent}>
-                <Text style={styles.title}>{spot.name}</Text>
-                <Text style={[
-                    styles.waveHeight,
-                    {color: waveHeightToColour(spot.waveHeight?.min)}
-                ]}>
-                    {spot.waveHeight?.humanRelation}
-                </Text>
+                {spot.name ? (
+                    <Text style={styles.title}>{spot.name}</Text>
+                ) : (
+                    <View style={styles.placeholderTitle} />
+                )}
+                
+                {spot.waveHeight?.humanRelation ? (
+                    <Text
+                        style={[
+                            styles.waveHeight,
+                            { color: waveHeightToColour(spot.waveHeight?.min) },
+                        ]}
+                    >
+                        {spot.waveHeight.humanRelation}
+                    </Text>
+                ) : (
+                    <View style={styles.placeholderWaveHeight} />
+                )}
+                
                 <StarRating waveRating={spot.rating} starSize={20} />
             </View>
 
-            
             <View style={styles.rightContent}>
                 {spot.photo ? (
                     <Image
@@ -64,10 +75,24 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 4,
     },
+    placeholderTitle: {
+        height: 20,
+        backgroundColor: "#d3d3d3",
+        borderRadius: 4,
+        marginVertical: 4,
+        width: "60%",
+    },
     waveHeight: {
         borderRadius: 4,
         fontSize: 16,
         fontWeight: "bold",
+    },
+    placeholderWaveHeight: {
+        height: 16,
+        backgroundColor: "#d3d3d3",
+        borderRadius: 4,
+        width: "40%",
+        marginVertical: 4,
     },
     rightContent: {
         width: 100,
