@@ -11,11 +11,11 @@
 export function waveHeightToColour(waveHeight) {
     if (waveHeight === undefined) {
         return "#000000";
-    } else if (waveHeight >= 6) {
-        return "#55995a";
     } else if (waveHeight >= 4) {
-        return "#e2bd4d";
+        return "#55995a";
     } else if (waveHeight >= 2) {
+        return "#e2bd4d";
+    } else if (waveHeight >= 1) {
         return "#db8734";
     } else {
         return "#e84b43";

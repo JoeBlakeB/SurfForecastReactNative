@@ -3,6 +3,7 @@
  */
 
 import { View, Text, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { waveHeightToColour } from "./Utils";
 
 /**
@@ -19,15 +20,22 @@ function WaveHeightForecastsRow({ surf }) {
                             : "")}
                         </Text>
                     <View style={styles.colorBarContainer}>
-                        {["morning", "noon", "night"].map((time, idx) => (
-                            <View
-                                key={idx}
-                                style={[
-                                    styles.colorBar,
-                                    { backgroundColor: (surfData ? waveHeightToColour(surfData[time]?.min || 0) : "#d3d3d3") },
+                        {surfData ? (
+                            <LinearGradient
+                                colors={[
+                                    waveHeightToColour(surfData.morning?.min || 0),
+                                    waveHeightToColour(surfData.noon?.min || 0),
+                                    waveHeightToColour(surfData.noon?.min || 0),
+                                    waveHeightToColour(surfData.night?.min || 0),
                                 ]}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                locations={[0.27,0.38,0.62,0.73]}
+                                style={styles.colorBar}
                             />
-                        ))}
+                        ) : (
+                            <View style={[styles.colorBar, { backgroundColor: "#d3d3d3" }]} />
+                        )}
                     </View>
                 </View>
             ))}
@@ -58,7 +66,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     colorBar: {
-        height: 5,
+        height: 6,
         flex: 1,
         marginHorizontal: 2,
         borderRadius: 2,
