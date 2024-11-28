@@ -74,8 +74,14 @@ class Spot {
     setSurfData(data) {
         let surf = [];
         for (let i = 0; i + 3 < data.length; i += 4) {
-            const min = Math.min(data[i+1].surf.min, data[i+2].surf.min, data[i+3].surf.min);
-            let max = 0, maxPlus = false;
+            const min = Math.min(
+                this.waveHeight.min,
+                data[i+1].surf.min,
+                data[i+2].surf.min,
+                data[i+3].surf.min);
+            let max = this.waveHeight.max;
+            let maxPlus = false;
+
             for (let j = i+1; j <= i+3; j++) {
                 if (data[j].surf.max >= max) {
                     max = data[j].surf.max;
