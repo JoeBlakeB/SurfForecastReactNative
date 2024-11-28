@@ -20,7 +20,7 @@ function BeachOverviewCard({ spot, renderMedia=true }) {
         >
             <View style={styles.rowFlex}>
                 <Text style={styles.title}>{spot.name}</Text>
-                <StarRating waveRating={ spot.rating } />
+                <StarRating starCount={ spot.starCount || 0 } />
             </View>
             <View style={styles.imageContainer}>
                 {spot.photo ? (

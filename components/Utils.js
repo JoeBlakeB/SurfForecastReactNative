@@ -21,3 +21,8 @@ export function waveHeightToColour(waveHeight) {
         return "#e84b43";
     }
 }
+
+/**
+ * The lat/lon of BU Talbot Campus
+ */
+export const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };

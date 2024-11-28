@@ -9,27 +9,12 @@
 import { View, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
-const RATINGS = {
-    FLAT: 0,
-    VERY_POOR: 0.5,
-    POOR: 1,
-    POOR_TO_FAIR: 2,
-    FAIR: 3,
-    FAIR_TO_GOOD: 3.5,
-    GOOD: 4,
-    VERY_GOOD: 4.5,
-    GOOD_TO_EPIC: 4.5,
-    EPIC: 5,
-};
-
 /**
- * @param {string} waveRating the surfline rating
+ * @param {string} starCount how many stars to display
  */
-const StarRating = ({ waveRating, starSize=24 }) => {
-    const stars = RATINGS[waveRating] || 0;
-
-    const fullStars = Math.floor(stars);
-    const halfStar = stars % 1 >= 0.5;
+const StarRating = ({ starCount, starSize=24 }) => {
+    const fullStars = Math.floor(starCount);
+    const halfStar = starCount % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
     const starStyle = [styles.star, {fontSize: starSize}];

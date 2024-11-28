@@ -10,8 +10,7 @@ import * as Location from "expo-location";
 import Carousel from "react-native-reanimated-carousel";
 import SpotAPIContext from "../components/data/SpotAPIContext";
 import BeachOverviewCard from "../components/BeachOverviewCard";
-
-const TALBOT_CAMPUS_LOCATION = { coords: { latitude: 50.7415, longitude: -1.8946, latitudeDelta: 0.5, longitudeDelta: 0.5 } };
+import { TALBOT_CAMPUS_LOCATION } from "../components/Utils";
 
 const { width: screenWidth } = Dimensions.get("window");
 

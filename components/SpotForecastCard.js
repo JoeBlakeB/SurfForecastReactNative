@@ -38,7 +38,7 @@ function SpotForecastCard({ spot }) {
                         <View style={styles.placeholderWaveHeight} />
                     )}
 
-                    <StarRating waveRating={spot.rating} starSize={20} />
+                    <StarRating starCount={spot.starCount || 0} starSize={20} />
                 </View>
 
                 <View style={styles.rightContent}>

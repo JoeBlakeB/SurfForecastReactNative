@@ -7,6 +7,29 @@ import SettingsContext from "./SettingsContext";
 
 const GET_EXTRA_DELTA = 0.4;
 
+/**
+ * How many stars should be given for each of Surfline's ratings
+ * 
+ * information about the surfline surf quality scale at
+ * https://www.surfline.com/surf-news/surflines-rating-surf-heights-quality/1417
+ */
+const RATINGS_STAR_COUNT = {
+    FLAT: 0,
+    VERY_POOR: 0.5,
+    POOR: 1,
+    POOR_TO_FAIR: 2,
+    FAIR: 3,
+    FAIR_TO_GOOD: 3.5,
+    GOOD: 4,
+    VERY_GOOD: 4.5,
+    GOOD_TO_EPIC: 4.5,
+    EPIC: 5,
+};
+
+const STARTUP_DATE = new Date();
+/** Include the current date&hour to stop showing old images */
+const IMAGE_TIMESTAMP = `?${STARTUP_DATE.getFullYear()}${String(STARTUP_DATE.getMonth() + 1).padStart(2, '0')}${String(STARTUP_DATE.getDate()).padStart(2, '0')}${String(STARTUP_DATE.getHours()).padStart(2, '0')}`;
+
 class Spot {
     constructor(data) {
         if (typeof data === "string") {
@@ -38,8 +61,9 @@ class Spot {
         this.name = spot.name;
         this.lat = spot.lat;
         this.lon = spot.lon;
-        this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull : null;
+        this.photo = spot.cameras.length > 0 ? spot.cameras[0].stillUrlFull + IMAGE_TIMESTAMP : null;
         this.rating = forecast.conditions.value;
+        this.starCount = RATINGS_STAR_COUNT[forecast.conditions.value];
         this.waveHeight = {
             min: forecast.waveHeight.min,
             max: forecast.waveHeight.max,
@@ -86,7 +110,6 @@ class Spot {
 
 const DEMO_SPOTS = (() => {
     let spots = {};
-    const possibleRatings = ["FLAT", "POOR", "POOR_TO_FAIR", "FAIR", "GOOD", "EPIC"];
     const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "You're gonna drown lol"];
 
     const generateWaveHeights = () => {
@@ -128,7 +151,7 @@ const DEMO_SPOTS = (() => {
         }
     ]) {
         spot.cameras = [];
-        spot.conditions = {value: possibleRatings[Math.floor(Math.random() * possibleRatings.length)]};
+        spot.conditions = {value: Object.keys(RATINGS_STAR_COUNT)[Math.floor(Math.random() * Object.keys(RATINGS_STAR_COUNT).length)]};
 
         spot.waveHeight = {
             ...generateWaveHeights(),
@@ -341,7 +364,7 @@ export const SpotAPIProvider = ({ children }) => {
         spots, getSpot,
         getSpotsForRegion,
         getReportsForSpots,
-        storedReports, fetchReportsInProgress,
+        storedReports, fetchReportsInProgress, storedRegions,
     };
 
     return (
