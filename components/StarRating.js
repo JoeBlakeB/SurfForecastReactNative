@@ -50,7 +50,7 @@ const StarRating = ({ waveRating, starSize=24 }) => {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        marginVertical: 10,
+        marginVertical: 8,
         flexDirection: "row",
     },
     star: {

@@ -26,7 +26,7 @@ class Spot {
     }
 
     update(data) {
-        let spot, conditions;
+        let spot, forecast;
         if (data._id === undefined && data.spot !== undefined) {
             spot = data.spot;
             forecast = data.forecast;
@@ -46,12 +46,54 @@ class Spot {
             humanRelation: forecast.waveHeight.humanRelation,
         };
     }
+
+    setSurfData(data) {
+        let surf = [];
+        for (let i = 0; i + 3 < data.length; i += 4) {
+            const min = Math.min(data[i+1].surf.min, data[i+2].surf.min, data[i+3].surf.min);
+            let max = 0, maxPlus = false;
+            for (let j = i+1; j <= i+3; j++) {
+                if (data[j].surf.max >= max) {
+                    max = data[j].surf.max;
+                    maxPlus |= data[j].surf.plus;
+                }
+            }
+
+            surf.push({
+                morning: {
+                    min: data[i+1].surf.min,
+                    max: data[i+1].surf.max,
+                },
+                noon: {
+                    min: data[i+2].surf.min,
+                    max: data[i+2].surf.max,
+                },
+                night: {
+                    min: data[i+3].surf.min,
+                    max: data[i+3].surf.max,
+                },
+                all: {
+                    min: min,
+                    max: max,
+                    maxPlus: maxPlus,
+                }
+            });
+        }
+        
+        this.surf = surf;
+    }
 };
 
 const DEMO_SPOTS = (() => {
     let spots = {};
     const possibleRatings = ["FLAT", "POOR", "POOR_TO_FAIR", "FAIR", "GOOD", "EPIC"];
     const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "You're gonna drown lol"];
+
+    const generateWaveHeights = () => {
+        min = Math.floor(Math.random() * 10);
+        max = min + Math.floor(Math.random() * 3);
+        return {min: min, max: max};
+    }
 
     for (let spot of [
         {
@@ -88,15 +130,29 @@ const DEMO_SPOTS = (() => {
         spot.cameras = [];
         spot.conditions = {value: possibleRatings[Math.floor(Math.random() * possibleRatings.length)]};
 
-        waveMin = Math.floor(Math.random() * 6) * 2;
-        waveMax = waveMin + 2;
         spot.waveHeight = {
-            min: waveMin,
-            max: waveMax,
+            ...generateWaveHeights(),
             humanRelation: possibleWaveHeights[Math.floor(Math.random() * possibleWaveHeights.length)]
         };
 
         spots[spot._id] = new Spot(spot);
+
+        surfData = [];
+        for (let i = 0; i < 5; i++) {
+            const day = {
+                morning: generateWaveHeights(),
+                noon: generateWaveHeights(),
+                night: generateWaveHeights(),
+            }
+            day.all = {
+                min: Math.min(day.morning.min, day.noon.min, day.night.min),
+                max: Math.max(day.morning.max, day.noon.max, day.night.max),
+                maxPlus: Math.random() > 0.8,
+            };
+            surfData.push(day);
+        }
+
+        spots[spot._id].surf = surfData;
     }
 
     return spots;
@@ -110,6 +166,7 @@ export const SpotAPIProvider = ({ children }) => {
     const [fetchRegionQueue, setFetchRegionQueue] = useState([]);
     const [storedReports, setStoredReports] = useState([]);
     const [fetchReportQueue, setFetchReportQueue] = useState([]);
+    const [fetchReportsInProgress, setFetchReportsInProgress] = useState([]);
 
     /**
      * @property {Object} spots an object with Spot objects with their id as the key
@@ -201,25 +258,47 @@ export const SpotAPIProvider = ({ children }) => {
 
         const spotID = fetchReportQueue[fetchReportQueue.length - 1];
         setFetchReportQueue(fetchReportQueue.slice(0, -1));
-        const url = `https://services.surfline.com/kbyg/spots/reports?spotId=${spotID}`;
-        const response = await fetch(url);
-        if (response.status !== 200) {
-            console.error("Error fetching spot report:", response.status, url);
+        setFetchReportsInProgress([...fetchReportsInProgress, spotID]);
+        const reportURL = `https://services.surfline.com/kbyg/spots/reports?spotId=${spotID}`;
+        const reportResponse = await fetch(reportURL);
+        if (reportResponse.status !== 200) {
+            console.error("Error fetching spot report:", reportResponse.status, reportURL);
+            setFetchReportsInProgress(fetchReportsInProgress.filter(item => item !== spotID));
             return;
         }
 
-        setStoredReports([...storedReports, spotID]);
-        const data = await response.json();
+        const reportData = await reportResponse.json();
 
         setSpots(prevSpots => {
             const newSpots = { ...prevSpots };
             if (newSpots[spotID]) {
-                newSpots[spotID].update(data);
+                newSpots[spotID].update(reportData);
             } else {
-                newSpots[spotID] = new Spot(data);
+                newSpots[spotID] = new Spot(reportData);
             }
             return newSpots;
         });
+
+        const surfURL = `https://services.surfline.com/kbyg/spots/forecasts/surf?days=5&intervalHours=6&spotId=${spotID}`;
+        const surfResponse = await fetch(surfURL);
+        if (surfResponse.status !== 200) {
+            console.error("Error fetching spot surf:", surfResponse.status, surfURL);
+            setFetchReportsInProgress(fetchReportsInProgress.filter(item => item !== spotID));
+            return;
+        }
+
+        const surfData = await surfResponse.json();
+
+        setSpots(prevSpots => {
+            const newSpots = { ...prevSpots };
+            if (newSpots[spotID]) {
+                newSpots[spotID].setSurfData(surfData.data.surf);
+            }
+            return newSpots;
+        });
+
+        setStoredReports([...storedReports, spotID]);
+        setFetchReportsInProgress(fetchReportsInProgress.filter(item => item !== spotID));
     };
 
     useEffect(() => {
@@ -239,7 +318,7 @@ export const SpotAPIProvider = ({ children }) => {
         setFetchReportQueue(fetchReportQueue => {
             const newQueue = [...fetchReportQueue];
             spotIDs.forEach(spotID => {
-                if (!newQueue.includes(spotID) && !storedReports.includes(spotID)) {
+                if (!newQueue.includes(spotID) && !storedReports.includes(spotID) && !fetchReportsInProgress.includes(spotID)) {
                     newQueue.push(spotID);
                 }
             });
@@ -262,6 +341,7 @@ export const SpotAPIProvider = ({ children }) => {
         spots, getSpot,
         getSpotsForRegion,
         getReportsForSpots,
+        storedReports, fetchReportsInProgress,
     };
 
     return (

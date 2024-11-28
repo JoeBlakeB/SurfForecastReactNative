@@ -5,6 +5,7 @@
 import { Text, TouchableOpacity, Image, StyleSheet, View } from "react-native";
 import StarRating from "./StarRating";
 import { waveHeightToColour } from "./Utils";
+import WaveHeightForecastsRow from "./WaveHeightForecastsRow";
 
 /**
  * @param {Spot} spot the spot to show on the card
@@ -16,38 +17,42 @@ function SpotForecastCard({ spot }) {
             delayPressIn={50}
             activeOpacity={0.9}
         >
-            <View style={styles.leftContent}>
-                {spot.name ? (
-                    <Text style={styles.title}>{spot.name}</Text>
-                ) : (
-                    <View style={styles.placeholderTitle} />
-                )}
-                
-                {spot.waveHeight?.humanRelation ? (
-                    <Text
-                        style={[
-                            styles.waveHeight,
-                            { color: waveHeightToColour(spot.waveHeight?.min) },
-                        ]}
-                    >
-                        {spot.waveHeight.humanRelation}
-                    </Text>
-                ) : (
-                    <View style={styles.placeholderWaveHeight} />
-                )}
-                
-                <StarRating waveRating={spot.rating} starSize={20} />
+            <View style={styles.topContent}>
+                <View style={styles.leftContent}>
+                    {spot.name ? (
+                        <Text style={styles.title}>{spot.name}</Text>
+                    ) : (
+                        <View style={styles.placeholderTitle} />
+                    )}
+
+                    {spot.waveHeight?.humanRelation ? (
+                        <Text
+                            style={[
+                                styles.waveHeight,
+                                { color: waveHeightToColour(spot.waveHeight?.min) },
+                            ]}
+                        >
+                            {spot.waveHeight.humanRelation}
+                        </Text>
+                    ) : (
+                        <View style={styles.placeholderWaveHeight} />
+                    )}
+
+                    <StarRating waveRating={spot.rating} starSize={20} />
+                </View>
+
+                <View style={styles.rightContent}>
+                    {spot.photo ? (
+                        <Image
+                            source={{ uri: spot.photo }}
+                            style={styles.image}
+                            resizeMode="cover"
+                        />
+                    ) : null}
+                </View>
             </View>
 
-            <View style={styles.rightContent}>
-                {spot.photo ? (
-                    <Image
-                        source={{ uri: spot.photo }}
-                        style={styles.image}
-                        resizeMode="cover"
-                    />
-                ) : null}
-            </View>
+            <WaveHeightForecastsRow surf={spot.surf} />
         </TouchableOpacity>
     );
 }
@@ -60,11 +65,15 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         flex: 1,
         width: "100%",
-        maxHeight: 110,
         padding: 12,
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "strech",
+    },
+    topContent: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: "flex-start",
     },
     leftContent: {
         flex: 1,
@@ -95,9 +104,12 @@ const styles = StyleSheet.create({
         marginVertical: 4,
     },
     rightContent: {
-        width: 100,
+        flex: 1,
+        maxWidth: 120,
+        height: 80,
         alignItems: "flex-end",
         position: "relative",
+        maxHeight: "100%",
     },
     image: {
         width: "100%",
