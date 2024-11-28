@@ -4,7 +4,7 @@
 
 import { Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
-function NewsCard({ title, subtitle, image, permalink, onPress }) {
+function NewsCard({ title, subtitle, image, onPress }) {
     return (
         <TouchableOpacity 
             style={styles.postCard}
