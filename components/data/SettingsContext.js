@@ -8,6 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SettingsContext = createContext();
 
+/**
+ * Provide the Settings for the rest of the app.
+ * 
+ * @returns {React.ReactElement} the children with the SpotAPI provided
+ */
 export const SettingsProvider = ({ children }) => {
     const [useRealAPI, setUseRealAPI] = useState(true);
     const [favoriteSpots, setFavoriteSpots] = useState([]);

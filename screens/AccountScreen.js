@@ -1,5 +1,5 @@
 /**
- * @fileoverview This is the account management tab screen, which shows the users account options
+ * @fileoverview This is the account management tab screen, which shows the users account options.
  */
 
 import { useContext } from "react";
@@ -11,6 +11,11 @@ import SettingsContext from "../components/data/SettingsContext";
 
 const Stack = createStackNavigator();
 
+/**
+ * A basic account screen with user preferences and links to account related pages in the webview.
+ * 
+ * @return {React.ReactElement}
+ */
 function AccountScreen({ navigation }) {
     const { settings } = useContext(SettingsContext);
 
@@ -51,6 +56,11 @@ function AccountScreen({ navigation }) {
     );
 }
 
+/**
+ * The navigator to allow webviews to be shown within the account tab.
+ * 
+ * @return {React.ReactElement}
+ */
 function AccountScreenNavigator() {
     return (
         <Stack.Navigator>

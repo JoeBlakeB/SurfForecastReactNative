@@ -1,5 +1,5 @@
 /**
- * @fileoverview This is the news tab screen, for surflines news feed
+ * @fileoverview This is the news tab screen, for Surfline's news feed.
  */
 
 import { StyleSheet, FlatList, ActivityIndicator } from "react-native";
@@ -11,6 +11,11 @@ import NewsCard from "../components/NewsCard";
 
 const Stack = createStackNavigator();
 
+/**
+ * The news tab for a list of recent news articles.
+ * 
+ * @return {React.ReactElement}
+ */
 function NewsScreen({ navigation }) {
     const { posts, isLoading, loadMorePosts } = useNewsAPI();
 
@@ -36,6 +41,11 @@ function NewsScreen({ navigation }) {
     );
 }
 
+/**
+ * The navigator to allow webviews to be shown within the news tab.
+ * 
+ * @return {React.ReactElement}
+ */
 function NewsScreenNavigator() {
     return (
         <Stack.Navigator>

@@ -9,9 +9,19 @@ import SpotFavoriteButton from "./SpotFavoriteButton"
 import { waveHeightToColour } from "./Utils";
 
 /**
+ * A card to show the overview of a beach, with a photo and current rating and wave height.
+ * 
  * @param {Spot} spot the spot to show on the card
+ * @param {boolean} renderMedia whether to render the photo and map view
+ * @returns {React.ReactElement}
  */
 function BeachOverviewCard({ spot, renderMedia=true }) {
+    const region = {
+        latitude: spot.lat,
+        longitude: spot.lon,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+    };
     return (
         <TouchableOpacity
             style={styles.beachCard}
@@ -33,12 +43,8 @@ function BeachOverviewCard({ spot, renderMedia=true }) {
                     <View style={styles.mapContainer}>
                         <MapView
                             style={styles.map}
-                            region={{
-                                latitude: spot.lat,
-                                longitude: spot.lon,
-                                latitudeDelta: 0.005,
-                                longitudeDelta: 0.005,
-                            }}
+                            initialRegion={region}
+                            region={region}
                             mapType="satellite"
                             scrollEnabled={false}
                             zoomEnabled={false}

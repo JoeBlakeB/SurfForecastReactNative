@@ -7,7 +7,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { waveHeightToColour } from "./Utils";
 
 /**
+ * A row of days forecasts.
+ * 
  * @param {Array} surf the forecast wave heights
+ * @returns {React.ReactElement}
  */
 function WaveHeightForecastsRow({ surf }) {
     return (

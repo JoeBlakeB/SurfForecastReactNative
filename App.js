@@ -1,3 +1,7 @@
+/**
+ * @fileoverview The main entrypoint for the app with the tab navigator.
+ */
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +28,11 @@ const TabIcon = (Component, iconNameFocused, iconNameUnfocused) => {
     };
 };
 
+/**
+ * The main tab navigator with icons on the bottom of the screen.
+ * 
+ * @return {React.ReactElement}
+ */
 export default function App() {
     return (
         <SettingsProvider>

@@ -10,7 +10,11 @@ import { View, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
 /**
+ * A row of five stars, with the correct amount of them filled in.
+ * 
  * @param {string} starCount how many stars to display
+ * @param {number} starSize the pixel size of the stars
+ * @returns {React.ReactElement}
  */
 const StarRating = ({ starCount, starSize=24 }) => {
     const fullStars = Math.floor(starCount);

@@ -8,7 +8,10 @@ import { waveHeightToColour } from "./Utils";
 import WaveHeightForecastsRow from "./WaveHeightForecastsRow";
 
 /**
+ * A card to show the current rating of a spot, and forecast wave heights over the next few days.
+ * 
  * @param {Spot} spot the spot to show on the card
+ * @returns {React.ReactElement}
  */
 function SpotForecastCard({ spot }) {
     return (

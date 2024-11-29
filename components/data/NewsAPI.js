@@ -40,6 +40,11 @@ const DEMO_POSTS = [
     }
 ]
 
+/**
+ * Get the news feed posts from the Surfline API.
+ * 
+ * @returns {Object} the posts, loading state, and a function to load more posts
+ */
 const useNewsAPI = () => {
     const { settings } = useContext(SettingsContext);
     const [posts, setPosts] = useState([]);

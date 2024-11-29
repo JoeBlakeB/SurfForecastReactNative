@@ -1,5 +1,5 @@
 /**
- * @fileoverview This is the favorite locations tab screen, the home page, which shows the users saved locations
+ * @fileoverview This is the favorite locations tab screen, the home page, which shows the users saved locations.
  */
 
 import { useContext, useEffect, useState, useCallback } from "react";
@@ -12,6 +12,11 @@ import SpotAPIContext from "../components/data/SpotAPIContext";
 import SpotForecastCard from "../components/SpotForecastCard";
 import { TALBOT_CAMPUS_LOCATION } from "../components/Utils";
 
+/**
+ * The screen for showing the users favorite spots, and the nearby highest rated unfavorite spots.
+ * 
+ * @return {React.ReactElement}
+ */
 function SpotsScreen() {
     const { settings } = useContext(SettingsContext);
     const { spotAPI } = useContext(SpotAPIContext);
@@ -22,6 +27,9 @@ function SpotsScreen() {
         spotAPI.getReportsForSpots(settings.favoriteSpots);
     }, [settings.favoriteSpots, settings.useRealAPI]);
 
+    /**
+     * Request the spots near the user, so there is enough to chose a few good ones from.
+     */
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -43,6 +51,9 @@ function SpotsScreen() {
         })();
     }, []);
 
+    /**
+     * Generate the featured spots list.
+     */
     useFocusEffect(
         useCallback(() => {
             if (!nearbyLocationsRetrieved)

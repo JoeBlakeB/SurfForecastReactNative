@@ -2,8 +2,9 @@
  * @fileoverview This is the explore tab screen, with a map for discovering new places to go
  */
 
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -28,6 +29,11 @@ function haversine(location1, location2) {
     return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+/**
+ * The tab for finding new spots, with a synced map view and carousel.
+ * 
+ * @returns {React.ReactElement}
+ */
 function ExploreScreen() {
     const [userLocation, setUserLocation] = useState({lat: TALBOT_CAMPUS_LOCATION.coords.latitude, lon: TALBOT_CAMPUS_LOCATION.coords.longitude});
     const [location, setLocation] = useState(TALBOT_CAMPUS_LOCATION.coords);
@@ -59,17 +65,19 @@ function ExploreScreen() {
     /**
      * Sort the spots by their distance from the current location
      */
-    useEffect(() => {
-        if (userLocation) {
-            const sorted = Object.values(spotAPI.spots)
-                .map(spot => ({
-                    ...spot,
-                    distance: haversine(userLocation, spot),
-                }))
-                .sort((a, b) => a.distance - b.distance);
-            setSortedSpots(sorted);
-        }
-    }, [userLocation, spotAPI.spots]);
+    useFocusEffect(
+        useCallback(() => {
+            if (userLocation) {
+                const sorted = Object.values(spotAPI.spots)
+                    .map(spot => ({
+                        ...spot,
+                        distance: haversine(userLocation, spot),
+                    }))
+                    .sort((a, b) => a.distance - b.distance);
+                setSortedSpots(sorted);
+            }
+        }, [spotAPI.spots])
+    );
 
     /**
      * Go to the correct spot on the map going to another location on the carousel

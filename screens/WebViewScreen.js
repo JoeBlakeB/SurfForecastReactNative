@@ -13,7 +13,9 @@ const MAX_RETRY_COUNT = 3;
 const SURFLINE_NEWS = "Surfline News";
 
 /**
- * WebViewScreen component displays a web page in a WebView after modifying its content.
+ * WebViewScreen component which displays a web page in a WebView after modifying its content.
+ * 
+ * @return {React.ReactElement}
  */
 function WebViewScreen({ route, navigation }) {
     const [htmlContent, setHtmlContent] = useState("");

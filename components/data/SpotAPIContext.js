@@ -30,6 +30,9 @@ const STARTUP_DATE = new Date();
 /** Include the current date&hour to stop showing old images */
 const IMAGE_TIMESTAMP = `?${STARTUP_DATE.getFullYear()}${String(STARTUP_DATE.getMonth() + 1).padStart(2, '0')}${String(STARTUP_DATE.getDate()).padStart(2, '0')}${String(STARTUP_DATE.getHours()).padStart(2, '0')}`;
 
+/**
+ * Class for creating a consistent data structure from Surfline's slightly inconsistent API.
+ */
 class Spot {
     constructor(data) {
         if (typeof data === "string") {
@@ -48,6 +51,11 @@ class Spot {
         this.update(data);
     }
 
+    /**
+     * Set the data from the mapview or single spot endpoints.
+     * 
+     * @param {Object} data the data.spot of the response
+     */
     update(data) {
         let spot, forecast;
         if (data._id === undefined && data.spot !== undefined) {
@@ -71,6 +79,11 @@ class Spot {
         };
     }
 
+    /**
+     * Set the data from the surf endpoint.
+     * 
+     * @param {Object} data the data.surf of the response
+     */
     setSurfData(data) {
         let surf = [];
         for (let i = 0; i + 3 < data.length; i += 4) {
@@ -114,6 +127,9 @@ class Spot {
     }
 };
 
+/**
+ * Dummy data generator for consistent fake data for an apps use.
+ */
 const DEMO_SPOTS = (() => {
     let spots = {};
     const possibleWaveHeights = ["Thigh Highs", "Head High", "Overhead", "You're gonna drown lol"];
@@ -189,6 +205,11 @@ const DEMO_SPOTS = (() => {
 
 export const SpotAPIContext = createContext();
 
+/**
+ * Provide the SpotAPI for the rest of the app.
+ * 
+ * @returns {React.ReactElement} the children with the SpotAPI provided
+ */
 export const SpotAPIProvider = ({ children }) => {
     const { settings } = useContext(SettingsContext);
     const [storedRegions, setStoredRegions] = useState([]);
@@ -268,7 +289,7 @@ export const SpotAPIProvider = ({ children }) => {
 
         let shouldFetchThisRegion = true;
         for (const storedRegion of [...storedRegions, ...fetchRegionQueue]) {
-            if (storedRegion.top === needed.top && storedRegion.bottom === needed.bottom && storedRegion.left === needed.left && storedRegion.right === needed.right) {
+            if (storedRegion.top >= needed.top && storedRegion.bottom <= needed.bottom && storedRegion.left <= needed.left && storedRegion.right >= needed.right) {
                 shouldFetchThisRegion = false;
                 break;
             }

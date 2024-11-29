@@ -4,6 +4,15 @@
 
 import { Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
+/**
+ * A card to show a single news article.
+ * 
+ * @param {string} title the title of the news item
+ * @param {string} subtitle the subtitle of the news item
+ * @param {string} image url for the post photo
+ * @param {Function} onPress the function to call when the card is pressed
+ * @returns {React.ReactElement}
+ */
 function NewsCard({ title, subtitle, image, onPress }) {
     return (
         <TouchableOpacity 
